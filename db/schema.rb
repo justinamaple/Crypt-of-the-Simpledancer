@@ -10,27 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_07_022439) do
+ActiveRecord::Schema.define(version: 2019_09_09_213712) do
 
-  create_table "levels", force: :cascade do |t|
-    t.integer "size_x"
-    t.integer "size_y"
-    t.integer "speed"
-    t.datetime "time"
+  create_table "achievements", force: :cascade do |t|
+    t.string "achievement_name"
+    t.integer "difficulty"
+    t.string "condition"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "players", force: :cascade do |t|
-    t.integer "pos_x"
-    t.integer "pos_y"
+  create_table "runs", force: :cascade do |t|
+    t.integer "score"
+    t.integer "turns"
+    t.integer "level"
+    t.integer "user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "walls", force: :cascade do |t|
-    t.integer "pos_x"
-    t.integer "pos_y"
+  create_table "unlocks", force: :cascade do |t|
+    t.integer "run_id"
+    t.integer "achievement_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "name"
+    t.string "password"
+    t.string "symbol"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

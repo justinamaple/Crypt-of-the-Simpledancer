@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class Game
-  attr_accessor :level, :killer
+  attr_accessor :level, :killer, :run_id
   attr_reader :enemy, :player
 
   def initialize
+    @run_id = Time.new
     setup_level
   end
 
@@ -64,7 +65,7 @@ class Game
       lose_screen
     end
     puts 'Try again? (y/n)'
-    input = gets.chomp.downcase
+    input = STDIN.gets.chomp.downcase
     if input == 'y'
       setup_level
       play
@@ -76,13 +77,13 @@ class Game
     Enemy.all.empty?
   end
 
+  def lost?
+    Player.all.empty?
+  end
+
   def win_screen
     puts 'You are a Winner!!!'
     puts "It only took you #{level.turn} turns"
-  end
-
-  def lost?
-    Player.all.empty?
   end
 
   def lose_screen
@@ -92,7 +93,7 @@ class Game
 
   def move_player
     print_controls
-    input = gets.chomp.downcase
+    input = STDIN.gets.chomp.downcase
     direction = translate_controls(input)
     exit_game if direction == :quit
     move_player if direction == :stay

@@ -1,2 +1,2 @@
 adapter: 'sqlite3'
-database: 'db/game.db'
+database: 'db/game_data.db'

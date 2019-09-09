@@ -11,6 +11,5 @@ require './lib/zombie'
 require 'yaml'
 require 'matrix'
 
-#loop do
-  # unless play_again?
+# Leave this file here for REPL usage
 Game.new.play
