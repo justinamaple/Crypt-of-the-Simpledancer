@@ -9,7 +9,5 @@ class GreenSlime < Enemy
     @turn = 0
   end
 
-  def take_turn
-    @turn += 1
-  end
+  def take_turn(_turn); end
 end

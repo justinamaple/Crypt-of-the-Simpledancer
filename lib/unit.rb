@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Unit
-  attr_accessor :x, :y, :last_location, :symbol, :facing, :turn
+  attr_accessor :x, :y, :last_location, :symbol, :facing, :health
 
   def initialize(x = nil, y = nil, symbol = '?')
     @x = x
@@ -9,7 +9,7 @@ class Unit
     @last_location = { x: @x, y: @y }
     @symbol = symbol
     @facing = nil
-    @turn = 0
+    @health = 1
   end
 
   def save_last_location

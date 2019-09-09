@@ -10,10 +10,9 @@ class OrangeSlime < Enemy
     @turn = 0
   end
 
-  def take_turn
+  def take_turn(_turn)
     move(facing)
     change_direction
-    @turn += 1
   end
 
   def change_direction

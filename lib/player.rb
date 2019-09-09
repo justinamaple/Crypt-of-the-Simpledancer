@@ -9,7 +9,6 @@ class Player < Unit
     @symbol = '@'
     @last_location = { x: @x, y: @y }
     @facing = nil
-    @turn = 0
     @@all << self
   end
 

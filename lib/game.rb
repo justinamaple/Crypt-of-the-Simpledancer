@@ -27,7 +27,7 @@ class Game
     6.times do
       # TODO: Definitely some way to clean this up
       x = 0
-      y = 0 
+      y = 0
       loop do
         x = rand(2..level.max_x - 3)
         y = rand(2..level.max_y - 3)
@@ -44,7 +44,7 @@ class Game
       when 2
         enemy = OrangeSlime.new(x, y)
       when 3
-        enemy = Zombie.new(x,y)
+        enemy = Zombie.new(x, y)
       end
       Enemy.all << enemy
       level.map[enemy.x][enemy.y] = enemy
@@ -78,7 +78,7 @@ class Game
 
   def win_screen
     puts 'You are a Winner!!!'
-    puts "It only took you #{player.turn} turns"
+    puts "It only took you #{level.turn} turns"
   end
 
   def lost?
@@ -87,7 +87,7 @@ class Game
 
   def lose_screen
     puts 'You are a LOSER!!!'
-    puts "Killed by a #{killer.class} on turn #{player.turn}"
+    puts "Killed by a #{killer.class} on turn #{level.turn}"
   end
 
   def move_player
@@ -96,14 +96,14 @@ class Game
     direction = translate_controls(input)
     exit_game if direction == :quit
     move_player if direction == :stay
-    player.turn += 1 if direction != :stay
+    level.turn += 1 if direction != :stay
     player.move(direction)
     check_move(player)
   end
 
   def move_enemies
     Enemy.all.each do |enemy|
-      enemy.take_turn
+      enemy.take_turn(level.turn)
       check_move(enemy)
     end
   end
@@ -145,7 +145,7 @@ class Game
   end
 
   def print_controls
-    puts "Turn: #{player.turn}"
+    puts "Turn: #{level.turn}"
     puts "Type 'h': ←, 'j': ↓, 'k': ↑, 'l': →, 'q': Quit.\n"
   end
 
