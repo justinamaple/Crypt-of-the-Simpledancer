@@ -2,14 +2,16 @@
 require 'io/console'
 class Game
   attr_accessor :level, :killer, :user, :run, :levels_cleared, :total_turns
-  attr_reader :enemy, :player
+  attr_reader :enemy, :player, :menu
 
   GAME_CLEAR = 9
 
   def initialize
     @levels_cleared = 0
     @total_turns = 0
-    setup_level
+    @menu = Menu.new
+    @user = menu.find_or_create_user
+    menu.print_banner(user)
   end
 
   def setup_level
@@ -29,63 +31,66 @@ class Game
   def spawn_enemies
     Enemy.all.clear
     (@levels_cleared + 2).times do
-      # TODO: Definitely some way to clean this up
-      x = 0
-      y = 0
-      loop do
-        x = rand(2..level.max_x - 3)
-        y = rand(2..level.max_y - 3)
-        break if level.map[x][y].class == String
-      end
-
-      enemy_type = rand(0..3)
-      enemy = nil
-      case enemy_type
-      when 0
-        enemy = GreenSlime.new(x, y)
-      when 1
-        enemy = BlueSlime.new(x, y)
-      when 2
-        enemy = OrangeSlime.new(x, y)
-      when 3
-        enemy = Zombie.new(x, y)
-      end
-      Enemy.all << enemy
-      level.map[enemy.x][enemy.y] = enemy
+      x, y = *generate_empty_coordinates
+      generate_random_enemy(x, y)
     end
   end
 
-  def login
-    system 'clear'
-    print_leaderboard
-    get_username
-    play
-  end
-
-  def get_username
-    print 'Please enter a username: '
-    input = STDIN.gets.chomp
-    @user = User.find_or_create_by(username: input)
-    @run = Run.create(user_id: @user.id)
-  end
-
-  def print_leaderboard
-    top_five = Run.all
-                  .order(levels_cleared: :desc, turns: :asc)
-                  .limit(5)
-
-    puts '====================================='
-    puts 'Welcome to Crypt of the Simpledancer!'
-    puts '====================================='
-    puts 'High Scores:'
-    top_five.each_with_index do |run, index|
-      if run
-        print "#{index + 1}. #{run.user.username} - Level #{run.levels_cleared}"
-        puts " in #{run.turns} turns"
-      end
+  def generate_empty_coordinates
+    x = 0
+    y = 0
+    loop do
+      x = rand(2..level.max_x - 3)
+      y = rand(2..level.max_y - 3)
+      break if level.map[x][y].class == String
     end
-    puts 'No runs recorded yet!' unless top_five[0]
-    puts
+    [x, y]
+  end
+
+  def generate_random_enemy(x, y)
+    enemy_type = rand(0..3)
+    enemy = nil
+    case enemy_type
+    when 0
+      enemy = GreenSlime.new(x, y)
+    when 1
+      enemy = BlueSlime.new(x, y)
+    when 2
+      enemy = OrangeSlime.new(x, y)
+    when 3
+      enemy = Zombie.new(x, y)
+    end
+    Enemy.all << enemy
+    level.map[enemy.x][enemy.y] = enemy
+  end
+
+  def menu_screen
+    menu.print_options
+    menu_input
+    menu_screen
+  end
+
+  def menu_input
+    input = menu.get_input_s
+    case input
+    when '1'
+      setup_level
+      @run = Run.create(user_id: @user.id)
+      @total_turns = 0
+      play
+    when '2'
+      @user = menu.find_or_create_user
+      menu.print_banner(user)
+    when '3'
+      menu.print_high_scores
+    when '4'
+      menu.print_achievements(user)
+    when '5'
+      menu.exit_game
+    else
+      menu.invalid_input
+      menu_input
+    end
   end
 
   def play
@@ -109,14 +114,26 @@ class Game
       lose_screen
     end
     record_run
+    try_again
+  end
+
+  def try_again
     puts 'Try again? (y/n)'
-    input = STDIN.gets.chomp.downcase
-    if input == 'y'
+    input = menu.get_input_ch.downcase
+    case input
+    when 'y'
       @run = Run.create(user_id: @user.id)
+      @total_turns = 0
+      @levels_cleared = 0
       setup_level
       play
+    when 'n'
+      menu.clear_terminal
+      menu.print_banner(user)
+      menu_screen
+    else
+      try_again
     end
-    exit_game
   end
 
   def won?
@@ -132,21 +149,15 @@ class Game
     @levels_cleared = 0
   end
 
-  def win_screen
-    puts 'You are a Winner!!!'
-    puts "Cleared level #{levels_cleared} in #{@total_turns} turns"
-  end
-
-  def lose_screen
-    puts 'You are a LOSER!!!'
-    puts "Killed by a #{killer.class} on turn #{@total_turns}"
-  end
-
   def move_player
-    print_controls
+    print_stats
+    @menu.print_controls
     input = STDIN.getch.chomp.downcase
     direction = translate_controls(input)
-    Player.all.clear if direction == :quit
+    if direction == :quit
+      Player.all.clear
+      @killer = @player
+    end
     move_player if direction == :stay
     level.turns += 1 if direction != :stay
     player.move(direction)
@@ -177,8 +188,8 @@ class Game
         Enemy.all.delete(defender)
         reset_last_location(attacker)
       else
-        attacker.change_direction
         attacker.undo_last_move
+        attacker.change_direction
       end
     when Player
       if attacker.class <= Enemy
@@ -195,11 +206,20 @@ class Game
     level.map[unit.last_location[:x]][unit.last_location[:y]] = '-'
   end
 
-  def print_controls
-    print "User: #{@user.username}  "
+  def win_screen
+    puts 'You are a Winner!!!'
+    puts "Cleared level #{levels_cleared} in #{@total_turns} turns"
+  end
+
+  def lose_screen
+    puts 'You are a LOSER!!!'
+    puts "Killed by a #{killer.class} on turn #{@total_turns}"
+  end
+
+  def print_stats
+    print "User: #{user.username}  "
     print "Turn: #{level.turns}  "
     puts "Level: #{levels_cleared}"
-    puts "Type 'a': ←, 's': ↓, 'w': ↑, 'd': →\n"
   end
 
   def translate_controls(input)
@@ -217,9 +237,5 @@ class Game
       output = :quit
     end
     output
-  end
-
-  def exit_game
-    abort 'Thanks for playing!'
   end
 end

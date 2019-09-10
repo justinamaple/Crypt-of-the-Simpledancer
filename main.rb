@@ -8,6 +8,7 @@ require './lib/green_slime'
 require './lib/blue_slime'
 require './lib/orange_slime'
 require './lib/zombie'
+require './lib/menu'
 require 'yaml'
 require 'matrix'
 

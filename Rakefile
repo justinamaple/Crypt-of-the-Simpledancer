@@ -9,6 +9,7 @@ require_relative './lib/green_slime'
 require_relative './lib/blue_slime'
 require_relative './lib/orange_slime'
 require_relative './lib/zombie'
+require_relative './lib/menu'
 require 'yaml'
 require 'matrix'
 require "sinatra/activerecord/rake"
@@ -20,5 +21,5 @@ end
 
 desc "starts game"
 task :start_game do
-  Game.new.login
+  Game.new.menu_screen
 end
