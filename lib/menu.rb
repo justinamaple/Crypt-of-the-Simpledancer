@@ -37,7 +37,7 @@ class Menu
     puts '4. Show Achievements'
     puts '5. Exit Game'
     puts
-    print 'Enter the number of the option: '
+    print 'Press a number to begin: '
   end
 
   def find_or_create_user(username = nil)
@@ -45,7 +45,7 @@ class Menu
 
     clear_terminal
     print 'Please enter a username: '
-    input = STDIN.gets.chomp
+    input = STDIN.gets.strip
     clear_terminal
     User.find_or_create_by(username: input)
   end
@@ -81,7 +81,7 @@ class Menu
   end
 
   def get_input_ch
-    STDIN.getch.chomp.downcase
+    STDIN.getch
   end
 
   def get_input_s

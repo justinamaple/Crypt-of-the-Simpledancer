@@ -71,7 +71,7 @@ class Game
   end
 
   def menu_input
-    input = menu.get_input_s
+    input = menu.get_input_ch
     case input
     when '1'
       setup_level
@@ -85,7 +85,7 @@ class Game
       menu.print_high_scores
     when '4'
       menu.print_achievements(user)
-    when '5'
+    when /[5qnx]/
       menu.exit_game
     else
       menu.invalid_input
@@ -127,7 +127,7 @@ class Game
       @levels_cleared = 0
       setup_level
       play
-    when 'n'
+    when /[qxn]/
       menu.clear_terminal
       menu.print_banner(user)
       menu_screen
@@ -189,7 +189,6 @@ class Game
         reset_last_location(attacker)
       else
         attacker.undo_last_move
-        attacker.change_direction
       end
     when Player
       if attacker.class <= Enemy
