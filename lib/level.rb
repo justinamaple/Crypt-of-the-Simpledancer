@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Level
-  attr_accessor :map, :turn
+  attr_accessor :map, :turns
   attr_reader :max_x, :max_y
 
   def initialize
@@ -12,7 +12,7 @@ class Level
   end
 
   def create_stage
-    @turn = 0
+    @turns = 0
     max_x.times do |x|
       max_y.times do |y|
         map[x][y] = if x.zero? || x == max_x - 1 || y.zero? || y == max_y - 1
@@ -45,7 +45,7 @@ class Level
   end
 
   def disco_floor(x, y)
-    if turn.even?
+    if turns.even?
       if x.odd? && y.odd?
         ' -'
       elsif x.even? && y.odd?

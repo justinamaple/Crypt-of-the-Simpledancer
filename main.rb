@@ -12,4 +12,4 @@ require 'yaml'
 require 'matrix'
 
 # Leave this file here for REPL usage
-Game.new.play
+Game.new.login

@@ -23,7 +23,7 @@ ActiveRecord::Schema.define(version: 2019_09_09_213712) do
   create_table "runs", force: :cascade do |t|
     t.integer "score"
     t.integer "turns"
-    t.integer "level"
+    t.integer "levels_cleared"
     t.integer "user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(version: 2019_09_09_213712) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "name"
+    t.string "username"
     t.string "password"
     t.string "symbol"
     t.datetime "created_at", precision: 6, null: false

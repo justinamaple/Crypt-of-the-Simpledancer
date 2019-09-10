@@ -1,11 +1,14 @@
 # frozen_string_literal: true
-
+require 'io/console'
 class Game
-  attr_accessor :level, :killer, :run_id
+  attr_accessor :level, :killer, :user, :run, :levels_cleared, :total_turns
   attr_reader :enemy, :player
 
+  GAME_CLEAR = 9
+
   def initialize
-    @run_id = Time.new
+    @levels_cleared = 0
+    @total_turns = 0
     setup_level
   end
 
@@ -25,7 +28,7 @@ class Game
 
   def spawn_enemies
     Enemy.all.clear
-    6.times do
+    (@levels_cleared + 2).times do
       # TODO: Definitely some way to clean this up
       x = 0
       y = 0
@@ -52,6 +55,39 @@ class Game
     end
   end
 
+  def login
+    system 'clear'
+    print_leaderboard
+    get_username
+    play
+  end
+
+  def get_username
+    print 'Please enter a username: '
+    input = STDIN.gets.chomp
+    @user = User.find_or_create_by(username: input)
+    @run = Run.create(user_id: @user.id)
+  end
+
+  def print_leaderboard
+    top_five = Run.all
+                  .order(levels_cleared: :desc, turns: :asc)
+                  .limit(5)
+
+    puts '====================================='
+    puts 'Welcome to Crypt of the Simpledancer!'
+    puts '====================================='
+    puts 'High Scores:'
+    top_five.each_with_index do |run, index|
+      if run
+        print "#{index + 1}. #{run.user.username} - Level #{run.levels_cleared}"
+        puts " in #{run.turns} turns"
+      end
+    end
+    puts 'No runs recorded yet!' unless top_five[0]
+    puts
+  end
+
   def play
     until won? || lost?
       system 'clear'
@@ -59,14 +95,24 @@ class Game
       move_player
       move_enemies
     end
+
+    @total_turns += level.turns
     if won?
-      win_screen
+      @levels_cleared += 1
+      setup_level
+      if levels_cleared >= GAME_CLEAR
+        win_screen
+      else
+        play
+      end
     elsif lost?
       lose_screen
     end
+    record_run
     puts 'Try again? (y/n)'
     input = STDIN.gets.chomp.downcase
     if input == 'y'
+      @run = Run.create(user_id: @user.id)
       setup_level
       play
     end
@@ -81,30 +127,35 @@ class Game
     Player.all.empty?
   end
 
+  def record_run
+    @run.update(turns: @total_turns, levels_cleared: levels_cleared)
+    @levels_cleared = 0
+  end
+
   def win_screen
     puts 'You are a Winner!!!'
-    puts "It only took you #{level.turn} turns"
+    puts "Cleared level #{levels_cleared} in #{@total_turns} turns"
   end
 
   def lose_screen
     puts 'You are a LOSER!!!'
-    puts "Killed by a #{killer.class} on turn #{level.turn}"
+    puts "Killed by a #{killer.class} on turn #{@total_turns}"
   end
 
   def move_player
     print_controls
-    input = STDIN.gets.chomp.downcase
+    input = STDIN.getch.chomp.downcase
     direction = translate_controls(input)
-    exit_game if direction == :quit
+    Player.all.clear if direction == :quit
     move_player if direction == :stay
-    level.turn += 1 if direction != :stay
+    level.turns += 1 if direction != :stay
     player.move(direction)
     check_move(player)
   end
 
   def move_enemies
     Enemy.all.each do |enemy|
-      enemy.take_turn(level.turn)
+      enemy.take_turn(level.turns)
       check_move(enemy)
     end
   end
@@ -120,9 +171,7 @@ class Game
     case defender
     when Wall
       attacker.undo_move
-      if attacker.class <= Enemy
-        attacker.change_direction
-      end
+      attacker.change_direction if attacker.class <= Enemy
     when Enemy
       if attacker.class == Player
         Enemy.all.delete(defender)
@@ -146,8 +195,10 @@ class Game
   end
 
   def print_controls
-    puts "Turn: #{level.turn}"
-    puts "Type 'h': ←, 'j': ↓, 'k': ↑, 'l': →, 'q': Quit.\n"
+    print "User: #{@user.username}  "
+    print "Turn: #{level.turns}  "
+    puts "Level: #{levels_cleared}"
+    puts "Type 'a': ←, 's': ↓, 'w': ↑, 'd': →\n"
   end
 
   def translate_controls(input)

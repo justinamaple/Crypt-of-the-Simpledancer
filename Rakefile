@@ -19,6 +19,6 @@ task :console do
 end
 
 desc "starts game"
-task :start do
-  Game.new.play
+task :start_game do
+  Game.new.login
 end
