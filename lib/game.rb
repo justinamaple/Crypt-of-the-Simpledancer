@@ -170,14 +170,15 @@ class Game
 
     case defender
     when Wall
-      attacker.undo_move
+      attacker.undo_last_move
       attacker.change_direction if attacker.class <= Enemy
     when Enemy
       if attacker.class == Player
         Enemy.all.delete(defender)
         reset_last_location(attacker)
       else
-        attacker.undo_move
+        attacker.change_direction
+        attacker.undo_last_move
       end
     when Player
       if attacker.class <= Enemy

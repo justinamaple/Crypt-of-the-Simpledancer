@@ -1,70 +1,73 @@
 # frozen_string_literal: true
 
 class Unit
-  attr_accessor :x, :y, :last_location, :symbol, :facing, :health
+  attr_accessor :x, :y, :last_location, :last_direction, :symbol, :facing, :health
 
   def initialize(x = nil, y = nil, symbol = '?')
     @x = x
     @y = y
     @last_location = { x: @x, y: @y }
+    @last_direction = nil
     @symbol = symbol
     @facing = nil
     @health = 1
   end
 
-  def save_last_location
+  def save_last_move
     @last_location = { x: @x, y: @y }
+    @last_direction = @facing
   end
 
-  def undo_move
+  def undo_last_move
     @x = last_location[:x]
     @y = last_location[:y]
+    @facing = last_direction
   end
 
   def left
-    save_last_location
+    save_last_move
     @x -= 1
     @facing = :left
   end
 
   def down
-    save_last_location
+    save_last_move
     @y -= 1
     @facing = :down
   end
 
   def up
-    save_last_location
+    save_last_move
     @y += 1
     @facing = :up
   end
 
   def right
-    save_last_location
+    save_last_move
     @x += 1
     @facing = :right
   end
 
   def up_left
-    save_last_location
+    save_last_move
     @x -= 1
     @y += 1
   end
 
   def up_right
-    save_last_location
+    save_last_move
     @x += 1
     @y += 1
   end
 
   def down_left
-    save_last_location
+    save_last_move
     @x -= 1
     @y -= 1
   end
 
   def down_right
-    save_last_location
+    save_last_move
     @x += 1
     @y -= 1
   end
@@ -80,12 +83,12 @@ class Unit
     when :right
       right
     when :stay
-      save_last_location
+      save_last_move
     end
   end
 
   def flip_direction
-    save_last_location
+    save_last_move
     case @facing
     when :left
       @facing = :right

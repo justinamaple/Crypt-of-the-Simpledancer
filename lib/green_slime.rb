@@ -10,4 +10,6 @@ class GreenSlime < Enemy
   end
 
   def take_turn(_turn); end
+
+  def change_direction; end
 end
