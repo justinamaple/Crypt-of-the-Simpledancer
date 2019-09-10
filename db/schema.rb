@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_09_213712) do
+ActiveRecord::Schema.define(version: 2019_09_10_230027) do
 
   create_table "achievements", force: :cascade do |t|
     t.string "achievement_name"
@@ -32,6 +32,8 @@ ActiveRecord::Schema.define(version: 2019_09_09_213712) do
   create_table "unlocks", force: :cascade do |t|
     t.integer "run_id"
     t.integer "achievement_id"
+    t.datetime "created_at", default: "2019-09-10 23:04:08", null: false
+    t.datetime "updated_at", default: "2019-09-10 23:04:08", null: false
   end
 
   create_table "users", force: :cascade do |t|

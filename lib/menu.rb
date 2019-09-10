@@ -83,16 +83,22 @@ class Menu
       puts 'Total Levels: %3d' % user_runs.sum(&:levels_cleared)
       puts 'Total Turns: %4d' % user_runs.sum(&:turns)
       puts
-
     end
 
+    # Unlock.joins(:)
+    # end
   end
 
   def unlock_achievements(user_runs)
     # Should refactor the unlocker to happen only off the last run right before 
     # recording. This would make it so that you wouldn't have to worry about 
     # unlocking each achievement too many times.
-    Achievement.all
+    Achievement.all.each do |achievement|
+      success_runs = user_runs.where(achievement.condition)
+      unless success_runs.empty?
+        Unlock.find_or_create_by(achievement: achievement, run: success_runs[0])
+      end
+    end
   end
 
   def exit_game
