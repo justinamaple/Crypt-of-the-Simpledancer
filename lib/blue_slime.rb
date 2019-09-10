@@ -14,6 +14,7 @@ class BlueSlime < Enemy
       move(facing)
     else
       change_direction
+      move(:stay)
     end
   end
 
