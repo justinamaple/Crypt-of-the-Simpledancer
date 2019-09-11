@@ -15,7 +15,7 @@ class Menu
     best_run = Run.where('user_id = ?', user.id)
                   .order(levels_cleared: :desc, turns: :asc)
                   .limit(1)[0]
-    puts " New Player Detected, Best of Luck <3" unless last_run
+    puts ' New Player Detected, Best of Luck <3' unless last_run
     if last_run
       print " Last Run: Level #{last_run.levels_cleared}, %3d turns " % last_run.turns
       puts "on #{last_run.updated_at.strftime('%d/%m/%Y')}"
@@ -50,19 +50,18 @@ class Menu
 
   def print_high_scores
     top_ten = Run.all
-                  .order(levels_cleared: :desc, turns: :asc)
-                  .limit(10)
+                 .order(levels_cleared: :desc, turns: :asc)
+                 .limit(10)
 
     clear_terminal
     puts '==========================================='
     puts '===         Top 10: Hall of FAME        ==='
     puts '==========================================='
     top_ten.each_with_index do |run, index|
-      if run
-        puts '%4d. %10s - Level %2d in %3d turns' % [
-          index + 1, run.user.username, run.levels_cleared, run.turns
-        ]
-      end
+      next unless run
+
+      puts format('%4d. %10s - Level %2d in %3d turns',
+                  index + 1, run.user.username, run.levels_cleared, run.turns)
     end
     puts 'No runs recorded yet!' unless top_ten[0]
   end
@@ -74,15 +73,15 @@ class Menu
     get_age_api(user)
     user.reload
 
-    puts '============================================'
-    puts '===       %8s\'s Achievements        ===' % [user.username]
-    puts '============================================'
+    puts '=============================================='
+    puts format('====       %8s\'s Achievements        ====', user.username)
+    puts '=============================================='
     print_aggregate_stats(user)
     print_individual_achievements(user)
   end
 
   def get_age_api(user)
-    if user.age == nil
+    if user.age.nil?
       json_response = RestClient.get('https://api.agify.io/?name=' + user.username.downcase)
       response = JSON.parse(json_response)
       user.update(age: response['age']) if response['age']
@@ -90,8 +89,8 @@ class Menu
   end
 
   def unlock_achievements(user_runs)
-    # Should refactor the unlocker to happen only off the last run right before 
-    # recording. This would make it so that you wouldn't have to worry about 
+    # Should refactor the unlocker to happen only off the last run right before
+    # recording. This would make it so that you wouldn't have to worry about
     # unlocking each achievement too many times.
     Achievement.all.each do |achievement|
       success_runs = user_runs.where(achievement.condition)
@@ -106,15 +105,15 @@ class Menu
     if user.runs.empty?
       puts 'You are a n00b!1!'
     else
-      puts 'Total Games: %7d' % user.runs.count
-      puts 'Total Levels: %6d' % user.runs.sum(&:levels_cleared)
-      puts 'Total Turns: %7d' % user.runs.sum(&:turns)
-      time_played = user.runs.sum { |run| 
+      puts format('%12s Total Games: %7d', '', user.runs.count)
+      puts format('%12s Total Levels: %6d', '', user.runs.sum(&:levels_cleared))
+      puts format('%12s Total Turns: %7d', '', user.runs.sum(&:turns))
+      time_played = user.runs.sum do |run|
         run.updated_at - run.created_at
-      }
-      puts "Time Played:   #{Time.at(time_played).strftime("%M:%S")}"
-      user_age = user.age ? user.age.to_s : "??"
-      puts "Estimated Age: %5s" % user_age
+      end
+      puts format('%12s Time Played: %7s', '', Time.at(time_played).strftime('%M:%S'))
+      user_age = user.age ? user.age.to_s : '??'
+      puts format('%12s Estimated Age: %5s', '', user_age)
       puts
     end
   end
@@ -124,8 +123,8 @@ class Menu
       unlocked = user.achievements.include?(achievement) ? '✓' : ' '
       stars = ''
       achievement.difficulty.times { stars += '*' }
-      print "[#{unlocked}] %-22s - %-5s" % [achievement.achievement_name, stars]
-      puts "%12s" % achievement.created_at.strftime('%d/%m/%Y')
+      print format("[#{unlocked}] %-22s - %-5s", achievement.achievement_name, stars)
+      puts '%12s' % achievement.created_at.strftime('%d/%m/%Y')
       puts "\t-%s" % achievement.condition
     end
   end
@@ -144,7 +143,7 @@ class Menu
   end
 
   def invalid_input
-    puts "Invalid Input Entered. Please enter a valid number"
+    puts 'Invalid Input Entered. Please enter a valid number'
   end
 
   def print_controls
