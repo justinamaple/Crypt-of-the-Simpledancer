@@ -69,31 +69,40 @@ class Menu
 
   def print_achievements(user)
     clear_terminal
-    user_runs = Run.where(user_id: user.id)
+    user_runs = Run.all.where(user: user)
     unlock_achievements(user_runs)
 
     puts '==========================================='
     puts '===      %8s\'s Achievements        ===' % [user.username]
     puts '==========================================='
-
     if user_runs.empty?
-      puts "You are a n00b!1!"
+      puts 'You are a n00b!1!'
     else
-      puts 'Total Games: %4d' % user_runs.count
-      puts 'Total Levels: %3d' % user_runs.sum(&:levels_cleared)
-      puts 'Total Turns: %4d' % user_runs.sum(&:turns)
+      puts 'Total Games: %7d' % user.runs.count
+      puts 'Total Levels: %6d' % user.runs.sum(&:levels_cleared)
+      puts 'Total Turns: %7d' % user.runs.sum(&:turns)
+      time_played = user.runs.sum { |run| 
+        run.updated_at - run.created_at
+      }
+      puts "Time Played:   #{Time.at(time_played).strftime("%M:%S")}"
       puts
     end
 
-    # Unlock.joins(:)
-    # end
+    Achievement.all.order(difficulty: :desc).uniq.each do |achievement|
+      unlocked = user.achievements.include?(achievement) ? '✓' : ' '
+      stars = ''
+      achievement.difficulty.times { stars += '*' }
+      print "[#{unlocked}] #{achievement.achievement_name} - #{stars}"
+      puts "\t\t#{achievement.created_at.strftime('%d/%m/%Y')}"
+      puts "\t\"#{achievement.condition}\""
+    end
   end
 
   def unlock_achievements(user_runs)
     # Should refactor the unlocker to happen only off the last run right before 
     # recording. This would make it so that you wouldn't have to worry about 
     # unlocking each achievement too many times.
-    Achievement.all.each do |achievement|
+    user.unlocks.all.each do |achievement|
       success_runs = user_runs.where(achievement.condition)
       unless success_runs.empty?
         Unlock.find_or_create_by(achievement: achievement, run: success_runs[0])

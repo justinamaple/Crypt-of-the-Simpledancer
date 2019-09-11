@@ -72,6 +72,7 @@ class Game
 
   def menu_input
     input = menu.get_input_ch
+    @user.reload
     case input
     when '1'
       setup_level
@@ -232,7 +233,7 @@ class Game
       output = :up
     when /[ld]/
       output = :right
-    when /[qx]/
+    when /[q]/
       output = :quit
     end
     output
