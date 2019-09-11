@@ -1,17 +1,9 @@
 require_relative 'config/environment.rb'
-require_relative './lib/game'
-require_relative './lib/level'
-require_relative './lib/unit'
-require_relative './lib/wall'
-require_relative './lib/player'
-require_relative './lib/enemy'
-require_relative './lib/green_slime'
-require_relative './lib/blue_slime'
-require_relative './lib/orange_slime'
-require_relative './lib/zombie'
-require_relative './lib/menu'
+require_all './lib'
 require 'yaml'
 require 'matrix'
+require 'rest-client'
+require 'JSON'
 require "sinatra/activerecord/rake"
 
 desc "starts console"

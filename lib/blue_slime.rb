@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require_relative 'enemy'
 
 class BlueSlime < Enemy
   def initialize(x = nil, y = nil, _symbol = '?')
