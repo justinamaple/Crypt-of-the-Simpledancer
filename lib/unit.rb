@@ -58,30 +58,6 @@ class Unit
     @facing = :right
   end
 
-  def up_left
-    save_last_move
-    @x -= 1
-    @y += 1
-  end
-
-  def up_right
-    save_last_move
-    @x += 1
-    @y += 1
-  end
-
-  def down_left
-    save_last_move
-    @x -= 1
-    @y -= 1
-  end
-
-  def down_right
-    save_last_move
-    @x += 1
-    @y -= 1
-  end
-
   def move(input)
     case input
     when :left
@@ -135,14 +111,6 @@ class Unit
       integer = 2
     when :right
       integer = 3
-    when :up_left
-      integer = 4
-    when :up_right
-      integer = 5
-    when :down_left
-      integer = 6
-    when :down_right
-      integer = 7
     end
     integer
   end
@@ -158,14 +126,6 @@ class Unit
       direction = :up
     when 3
       direction = :right
-    when 4
-      direction = :up_left
-    when 5
-      direction = :up_right
-    when 6
-      direction = :down_left
-    when 7
-      direction = :down_right
     end
     direction
   end

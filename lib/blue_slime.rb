@@ -24,4 +24,9 @@ class BlueSlime < Enemy
   def change_direction
     flip_direction
   end
+
+  def take_dmg(dmg_amount)
+    @health -= dmg_amount
+    @symbol = 'b' if @health == 1
+  end
 end
