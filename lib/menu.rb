@@ -122,8 +122,8 @@ class Menu
     Achievement.all.order(difficulty: :asc).uniq.each do |achievement|
       unlocked = user.achievements.include?(achievement) ? '✓' : ' '
       stars = ''
-      achievement.difficulty.times { stars += '*' }
-      print format("[%s] %-22s - %-5s", unlocked, achievement.achievement_name, stars)
+      achievement.difficulty.times { stars += '★ ' }
+      print format("[%s] %-22s - %-10s", unlocked, achievement.achievement_name, stars)
       puts '%12s' % achievement.created_at.strftime('%d/%m/%Y')
       puts "\t-%s" % achievement.condition
     end

@@ -152,6 +152,7 @@ class Game
         puts 'The enemies sneer at you from a distance.'
       end
     end
+    @last_hit_enemy = nil
   end
 
   def try_again
@@ -229,9 +230,7 @@ class Game
         deal_damage(attacker, defender)
       end
     when String
-      if attacker.class <= Enemy
-        @last_hit_enemy = nil
-      elsif attacker.class == Player
+      if attacker.class == Player
         @last_hit_player = nil
       end
 
@@ -277,7 +276,7 @@ class Game
     print " Turn: #{level.turns}  "
     puts " Level: #{levels_cleared}"
     hearts = ''
-    player.health.times { hearts += '<3 ' }
+    player.health.times { hearts += '❤ ' }
     puts "Health: #{hearts}"
     puts "Weapon: Dagger"
     
