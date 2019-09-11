@@ -34,6 +34,8 @@ class Game
   end
 
   def spawn_player
+    player.x = rand(1..level.max_x - 1) if player.x >= level.max_x - 2
+    player.y = rand(1..level.max_y - 1)if player.y >= level.max_y - 2
     level.map[player.x][player.y] = player
   end
 
@@ -106,6 +108,7 @@ class Game
       system 'clear'
       print_last_turn_summary
       puts level
+      print_stats
       move_player
       move_enemies
     end
@@ -181,10 +184,8 @@ class Game
   end
 
   def move_player
-    print_stats
-    @menu.print_controls
     input = STDIN.getch.chomp.downcase
-    direction = translate_controls(input)
+    direction = translate_controls_arrows(input)
     if direction == :quit
       @last_hit_enemy = @player
       Player.all.clear
@@ -273,11 +274,14 @@ class Game
 
   def print_stats
     print "User: #{user.username}  "
-    print "Turn: #{level.turns}  "
-    puts "Level: #{levels_cleared}"
+    print " Turn: #{level.turns}  "
+    puts " Level: #{levels_cleared}"
     hearts = ''
     player.health.times { hearts += '<3 ' }
     puts "Health: #{hearts}"
+    puts "Weapon: Dagger"
+    
+    @menu.print_controls
   end
 
   def translate_controls(input)
@@ -290,6 +294,23 @@ class Game
     when /[kw]/
       output = :up
     when /[ld]/
+      output = :right
+    when /[q]/
+      output = :quit
+    end
+    output
+  end
+
+  def translate_controls_arrows(input)
+    output = :stay
+    case input
+    when /[d]/
+      output = :left
+    when /[b]/
+      output = :down
+    when /[a]/
+      output = :up
+    when /[c]/
       output = :right
     when /[q]/
       output = :quit

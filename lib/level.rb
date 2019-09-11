@@ -5,8 +5,8 @@ class Level
   attr_reader :max_x, :max_y
 
   def initialize
-    @max_x = 8
-    @max_y = 8
+    @max_x = rand(7..9)
+    @max_y = rand(7..9)
     @map = Array.new(max_x) { Array.new(max_y) }
     create_stage
   end

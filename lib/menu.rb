@@ -147,7 +147,7 @@ class Menu
   end
 
   def print_controls
-    puts "Type 'a': ←, 's': ↓, 'w': ↑, 'd': →\n"
+    puts "Controls: ← ↓ ↑ →, 'Q': quit\n"
   end
 
   def clear_terminal
