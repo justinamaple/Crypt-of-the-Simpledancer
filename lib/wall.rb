@@ -5,5 +5,6 @@ class Wall < Unit
     @x = x
     @y = y
     @symbol = 'X'
+    @health = 9_999
   end
 end

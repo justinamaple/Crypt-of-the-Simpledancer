@@ -1,7 +1,8 @@
 # frozen_string_literal: true
+
 require 'io/console'
 class Game
-  attr_accessor :level, :killer, :user, :run, :levels_cleared, :total_turns
+  attr_accessor :level, :user, :run, :levels_cleared, :total_turns
   attr_reader :enemy, :player, :menu
 
   GAME_CLEAR = 9
@@ -17,6 +18,7 @@ class Game
   def start_new_game
     @total_turns = 0
     @levels_cleared = 0
+    @player = Player.new
     @run = Run.create(user_id: @user.id, turns: total_turns, levels_cleared: levels_cleared)
     setup_level
   end
@@ -24,14 +26,14 @@ class Game
   def setup_level
     # Coordinate branch out from the bottom left
     # (0,0) = bot left   (max_x, max_y) = top right
+    @last_hit_player = nil
+    @last_hit_enemy = nil
     @level = Level.new
     spawn_player
     spawn_enemies
   end
 
   def spawn_player
-    Player.all.clear
-    @player = Player.new
     level.map[player.x][player.y] = player
   end
 
@@ -101,7 +103,8 @@ class Game
 
   def play
     until won? || lost?
-      # system 'clear'
+      system 'clear'
+      print_last_turn_summary
       puts level
       move_player
       move_enemies
@@ -121,6 +124,31 @@ class Game
     end
     record_run
     try_again
+  end
+
+  def print_last_turn_summary
+    if level.turns == 0
+      puts 'You find yourself on a new floor!'
+      puts 'The enemies ready themselves...'
+    else
+      if @last_hit_player
+        if @last_hit_player.dead?
+          puts "You destroyed #{@last_hit_player.class}!"
+        elsif @last_hit_player.class == Wall
+          puts "You kick the #{@last_hit_player.class} pointlessly..."
+        else
+          puts "You smack #{@last_hit_player.class} for #{player.attack}."
+        end
+      else
+        puts 'You carefully tread deeper into the dungeon.'
+      end
+
+      if @last_hit_enemy
+        puts "#{@last_hit_enemy.class} bops you for #{@last_hit_enemy.attack}"
+      else
+        puts 'The enemies sneer at you from a distance.'
+      end
+    end
   end
 
   def try_again
@@ -158,8 +186,8 @@ class Game
     input = STDIN.getch.chomp.downcase
     direction = translate_controls(input)
     if direction == :quit
+      @last_hit_enemy = @player
       Player.all.clear
-      @killer = @player
     end
     move_player if direction == :stay
     level.turns += 1 if direction != :stay
@@ -184,35 +212,35 @@ class Game
 
     case defender
     when Wall
-      attacker.undo_last_move
+      @last_hit_player = defender if attacker.class == Player
+      attacker.reset_position
       attacker.change_direction if attacker.class <= Enemy
     when Enemy
       if attacker.class == Player
+        @last_hit_player = defender
         deal_damage(attacker, defender)
       else
-        attacker.undo_last_move
+        attacker.reset_position
       end
     when Player
       if attacker.class <= Enemy
+        @last_hit_enemy = attacker
         deal_damage(attacker, defender)
       end
     when String
+      if attacker.class <= Enemy
+        @last_hit_enemy = nil
+      elsif attacker.class == Player
+        @last_hit_player = nil
+      end
+
       reset_last_location(attacker)
     end
   end
 
   def deal_damage(attacker, defender)
-    p "Doing Damage"
-    p attacker
-    p defender
     defender.take_dmg(attacker.attack)
-    p defender
-    puts 
-
-    puts "dead?"
-    p defender.dead?
     if defender.dead?
-      @killer = attacker
       reset_current_location(defender)
       case defender
       when Player
@@ -222,6 +250,7 @@ class Game
       end
       reset_last_location(attacker)
     end
+    attacker.reset_position
   end
 
   def reset_current_location(unit)
@@ -239,7 +268,7 @@ class Game
 
   def lose_screen
     puts 'You are a LOSER!!!'
-    puts "Killed by a #{killer.class} on turn #{@total_turns}"
+    puts "Killed by a #{@last_hit_enemy.class} on turn #{@total_turns}"
   end
 
   def print_stats

@@ -20,18 +20,14 @@ class Unit
     @last_direction = @facing
   end
 
-  def undo_last_move
+  def reset_position
     @x = last_location[:x]
     @y = last_location[:y]
     @facing = last_direction
   end
 
   def take_dmg(dmg_amount)
-    p "taking dmg"
-    p self
     @health -= dmg_amount
-    p self
-    puts 
   end
 
   def dead?
