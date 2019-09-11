@@ -88,7 +88,7 @@ class Menu
       puts
     end
 
-    Achievement.all.order(difficulty: :desc).uniq.each do |achievement|
+    Achievement.all.order(difficulty: :asc).uniq.each do |achievement|
       unlocked = user.achievements.include?(achievement) ? '✓' : ' '
       stars = ''
       achievement.difficulty.times { stars += '*' }
