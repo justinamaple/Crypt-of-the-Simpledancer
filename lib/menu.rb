@@ -102,7 +102,7 @@ class Menu
     # Should refactor the unlocker to happen only off the last run right before 
     # recording. This would make it so that you wouldn't have to worry about 
     # unlocking each achievement too many times.
-    user.unlocks.all.each do |achievement|
+    Achievement.all.each do |achievement|
       success_runs = user_runs.where(achievement.condition)
       unless success_runs.empty?
         Unlock.find_or_create_by(achievement: achievement, run: success_runs[0])
