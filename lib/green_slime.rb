@@ -6,7 +6,8 @@ class GreenSlime < Enemy
     @y = y
     @last_location = { x: @x, y: @y }
     @symbol = 'G'
-    @turn = 0
+    @health = 1
+    @attack = 1
   end
 
   def take_turn(_turn); end

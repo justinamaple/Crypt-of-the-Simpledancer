@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class Unit
-  attr_accessor :x, :y, :last_location, :last_direction, :symbol, :facing, :health
+  attr_accessor :x, :y, :last_location, :last_direction, :symbol, :facing
+  attr_accessor :health, :attack
 
   def initialize(x = nil, y = nil, symbol = '?')
     @x = x
@@ -11,6 +12,7 @@ class Unit
     @symbol = symbol
     @facing = nil
     @health = 1
+    @attack = 1
   end
 
   def save_last_move
@@ -22,6 +24,18 @@ class Unit
     @x = last_location[:x]
     @y = last_location[:y]
     @facing = last_direction
+  end
+
+  def take_dmg(dmg_amount)
+    p "taking dmg"
+    p self
+    @health -= dmg_amount
+    p self
+    puts 
+  end
+
+  def dead?
+    @health <= 0
   end
 
   def left

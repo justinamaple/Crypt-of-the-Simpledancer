@@ -14,6 +14,13 @@ class Game
     menu.print_banner(user)
   end
 
+  def start_new_game
+    @total_turns = 0
+    @levels_cleared = 0
+    @run = Run.create(user_id: @user.id, turns: total_turns, levels_cleared: levels_cleared)
+    setup_level
+  end
+
   def setup_level
     # Coordinate branch out from the bottom left
     # (0,0) = bot left   (max_x, max_y) = top right
@@ -75,9 +82,7 @@ class Game
     @user.reload
     case input
     when '1'
-      setup_level
-      @run = Run.create(user_id: @user.id)
-      @total_turns = 0
+      start_new_game
       play
     when '2'
       @user = menu.find_or_create_user
@@ -96,7 +101,7 @@ class Game
 
   def play
     until won? || lost?
-      system 'clear'
+      # system 'clear'
       puts level
       move_player
       move_enemies
@@ -123,10 +128,7 @@ class Game
     input = menu.get_input_ch.downcase
     case input
     when 'y'
-      @run = Run.create(user_id: @user.id)
-      @total_turns = 0
-      @levels_cleared = 0
-      setup_level
+      start_new_game
       play
     when /[qxn]/
       menu.clear_terminal
@@ -186,20 +188,44 @@ class Game
       attacker.change_direction if attacker.class <= Enemy
     when Enemy
       if attacker.class == Player
-        Enemy.all.delete(defender)
-        reset_last_location(attacker)
+        deal_damage(attacker, defender)
       else
         attacker.undo_last_move
       end
     when Player
       if attacker.class <= Enemy
-        @killer = attacker
-        Player.all.delete(defender)
-        reset_last_location(attacker)
+        deal_damage(attacker, defender)
       end
     when String
       reset_last_location(attacker)
     end
+  end
+
+  def deal_damage(attacker, defender)
+    p "Doing Damage"
+    p attacker
+    p defender
+    defender.take_dmg(attacker.attack)
+    p defender
+    puts 
+
+    puts "dead?"
+    p defender.dead?
+    if defender.dead?
+      @killer = attacker
+      reset_current_location(defender)
+      case defender
+      when Player
+        Player.all.delete(defender)
+      when Enemy
+        Enemy.all.delete(defender)
+      end
+      reset_last_location(attacker)
+    end
+  end
+
+  def reset_current_location(unit)
+    level.map[unit.x][unit.y] = '-'
   end
 
   def reset_last_location(unit)
@@ -220,6 +246,9 @@ class Game
     print "User: #{user.username}  "
     print "Turn: #{level.turns}  "
     puts "Level: #{levels_cleared}"
+    hearts = ''
+    player.health.times { hearts += '<3 ' }
+    puts "Health: #{hearts}"
   end
 
   def translate_controls(input)

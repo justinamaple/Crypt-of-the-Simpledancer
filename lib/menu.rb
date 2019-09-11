@@ -123,7 +123,7 @@ class Menu
       unlocked = user.achievements.include?(achievement) ? '✓' : ' '
       stars = ''
       achievement.difficulty.times { stars += '*' }
-      print format("[#{unlocked}] %-22s - %-5s", achievement.achievement_name, stars)
+      print format("[%s] %-22s - %-5s", unlocked, achievement.achievement_name, stars)
       puts '%12s' % achievement.created_at.strftime('%d/%m/%Y')
       puts "\t-%s" % achievement.condition
     end

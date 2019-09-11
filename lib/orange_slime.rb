@@ -7,7 +7,8 @@ class OrangeSlime < Enemy
     @last_location = { x: @x, y: @y }
     @symbol = 'O'
     @facing = integer_to_direction rand(0..3)
-    @turn = 0
+    @health = 1
+    @attack = 1
   end
 
   def take_turn(_turn)

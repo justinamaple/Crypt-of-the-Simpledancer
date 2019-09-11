@@ -8,6 +8,8 @@ class BlueSlime < Enemy
     @last_location = { x: @x, y: @y }
     @symbol = 'B'
     @facing = integer_to_direction rand(1..2)
+    @health = 2
+    @attack = 1
   end
 
   def take_turn(turn)

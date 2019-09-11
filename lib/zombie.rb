@@ -7,6 +7,8 @@ class Zombie < Enemy
     @last_location = { x: @x, y: @y }
     @symbol = 'Z'
     @facing = integer_to_direction rand(0..3)
+    @health = 1
+    @attack = 1
   end
 
   def take_turn(turn)

@@ -9,6 +9,8 @@ class Player < Unit
     @symbol = '@'
     @last_location = { x: @x, y: @y }
     @facing = nil
+    @health = 2
+    @attack = 1
     @@all << self
   end
 
