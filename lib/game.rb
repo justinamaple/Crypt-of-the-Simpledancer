@@ -3,7 +3,7 @@
 require 'io/console'
 class Game
   attr_accessor :level, :user, :run, :levels_cleared, :total_turns
-  attr_reader :enemy, :player, :menu
+  attr_reader :enemy, :player, :menu, :all_enemy_types
 
   GAME_CLEAR = 9
 
@@ -13,6 +13,13 @@ class Game
     @menu = Menu.new
     @user = menu.find_or_create_user
     menu.print_banner(user)
+    @all_enemy_types = assemble_all_enemy_types
+  end
+
+  def assemble_all_enemy_types
+    Enemy.descendants.select do |enemy|
+      enemy.descendants.empty?
+    end
   end
 
   def start_new_game
@@ -63,24 +70,8 @@ class Game
   end
 
   def generate_random_enemy(x, y)
-    enemy_type = rand(0..5)
-    # enemy_type = 5
-    enemy = nil
-    #Refactor this in enemy super class
-    case enemy_type
-    when 0
-      enemy = GreenSlime.new(x, y)
-    when 1
-      enemy = BlueSlime.new(x, y)
-    when 2
-      enemy = OrangeSlime.new(x, y)
-    when 3
-      enemy = Zombie.new(x, y)
-    when 4
-      enemy = BlueBat.new(x, y)
-    when 5
-      enemy = RedBat.new(x, y)
-    end
+    random_enemy_class = @all_enemy_types.sample
+    enemy = random_enemy_class.new(x, y)
     Enemy.all << enemy
     level.map[enemy.x][enemy.y] = enemy
   end

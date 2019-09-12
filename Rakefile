@@ -8,6 +8,8 @@ require 'rest-client'
 require 'json'
 require 'colorize'
 require 'sinatra/activerecord/rake'
+require 'active_support'
+require 'active_support/core_ext/object'
 
 desc 'starts console'
 task :console do

@@ -86,7 +86,7 @@ class Level
     when OrangeSlime
       unit.to_s.colorize(:light_red)
     when BlueSlime
-      unit.to_s.colorize(:light_blue)
+      unit.to_s.colorize(:cyan)
     when Zombie
       unit.to_s.colorize(:light_yellow)
     when BlueBat

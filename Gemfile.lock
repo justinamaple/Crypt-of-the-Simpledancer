@@ -80,6 +80,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activesupport
   colorize
   database_cleaner
   pry
