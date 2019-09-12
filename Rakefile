@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'config/environment.rb'
 require_all './lib'
 require 'yaml'
@@ -5,14 +7,14 @@ require 'matrix'
 require 'rest-client'
 require 'JSON'
 require 'colorize'
-require "sinatra/activerecord/rake"
+require 'sinatra/activerecord/rake'
 
-desc "starts console"
+desc 'starts console'
 task :console do
   Pry.start
 end
 
-desc "starts game"
+desc 'starts game'
 task :start_game do
   Game.new.menu_screen
 end

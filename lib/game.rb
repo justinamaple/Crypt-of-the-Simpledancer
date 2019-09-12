@@ -35,7 +35,7 @@ class Game
 
   def spawn_player
     player.x = rand(1..level.max_x - 1) if player.x >= level.max_x - 2
-    player.y = rand(1..level.max_y - 1)if player.y >= level.max_y - 2
+    player.y = rand(1..level.max_y - 1) if player.y >= level.max_y - 2
     level.map[player.x][player.y] = player
   end
 
@@ -147,7 +147,7 @@ class Game
       end
 
       if @last_hit_enemy
-        puts "#{@last_hit_enemy.class} bops you for #{@last_hit_enemy.attack}"
+        puts "#{@last_hit_enemy.class} bops you for #{@last_hit_enemy.attack}."
       else
         puts 'The enemies sneer at you from a distance.'
       end
@@ -262,25 +262,24 @@ class Game
   end
 
   def win_screen
-    puts 'You are a Winner!!!'
+    puts 'You are a Winner!!!'.colorize(:green)
     puts "Cleared level #{levels_cleared} in #{@total_turns} turns"
   end
 
   def lose_screen
-    puts 'You are a LOSER!!!'
+    puts 'You are a LOSER!!!'.colorize(:red)
     puts "Killed by a #{@last_hit_enemy.class} on turn #{@total_turns}"
   end
 
   def print_stats
-    print "User: #{user.username}  "
-    print " Turn: #{level.turns}  "
-    puts " Level: #{levels_cleared}"
+    print "User: #{user.username.colorize(:light_blue)}  "
+    print " Turn: #{level.turns.to_s.colorize(:light_cyan)}  "
+    puts " Level: #{levels_cleared.to_s.colorize(:light_magenta)}"
     hearts = ''
     player.health.times { hearts += '❤ ' }
     puts "Health: #{hearts.colorize(:red)}"
     print "Weapon: "
     puts 'Dagger'.colorize(:cyan)
-    
     @menu.print_controls
   end
 

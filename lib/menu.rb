@@ -9,7 +9,7 @@ class Menu
     puts '============================================'.colorize(:light_yellow)
     puts '===      Crypt of the Simpledancer!      ==='.colorize(:light_yellow)
     puts '============================================'.colorize(:light_yellow)
-    puts " User: #{user.username}"
+    puts " User: #{user.username.colorize(:light_blue)}"
     last_run = Run.where('user_id = ?', user.id)
                   .last
     best_run = Run.where('user_id = ?', user.id)
@@ -120,11 +120,15 @@ class Menu
 
   def print_individual_achievements(user)
     Achievement.all.order(difficulty: :asc).uniq.each do |achievement|
-      unlocked = user.achievements.include?(achievement) ? '✓' : ' '
+      unlocked = user.achievements.include?(achievement) ? '✓'.colorize(:light_green) : ' '
       stars = ''
       achievement.difficulty.times { stars += '★ ' }
-      print format("[%s] %-22s - %-10s", unlocked, achievement.achievement_name, stars.colorize(:light_yellow))
-      puts '%12s' % achievement.created_at.strftime('%d/%m/%Y')
+      print format("[%s] %-22s - %-24s", unlocked, achievement.achievement_name, stars.colorize(:light_yellow))
+      if unlocked != ' '
+        puts '%12s' % user.unlocks.where(achievement: achievement)[0].created_at.strftime('%m/%d/%Y')
+      else 
+        puts
+      end
       puts "\t-%s" % achievement.condition
     end
   end
@@ -147,7 +151,11 @@ class Menu
   end
 
   def print_controls
-    puts "Controls: ← ↓ ↑ →, 'Q': quit\n"
+    print "Controls: "
+    print "← ↓ ↑ →".colorize(:green)
+    print ", "
+    print "'Q'".colorize(:light_yellow)
+    puts ": quit\n"
   end
 
   def clear_terminal
