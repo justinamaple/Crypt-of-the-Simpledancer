@@ -2,7 +2,7 @@
 require_relative 'enemy'
 
 class Bat < Enemy
-  def initialize(x = nil, y = nil)
+  def initialize(x, y)
     @x = x
     @y = y
     @last_location = { x: @x, y: @y }

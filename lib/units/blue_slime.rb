@@ -1,11 +1,12 @@
 # frozen_string_literal: true
-require_relative 'enemy'
 
-class BlueSlime < Enemy
-  def initialize(x = nil, y = nil)
+require_relative 'slime'
+
+class BlueSlime < Slime
+  def initialize(x, y)
     @x = x
     @y = y
-    @last_location = { x: @x, y: @y }
+    @last_location = { x: x, y: y }
     @symbol = 'S'
     @facing = integer_to_direction rand(1..2)
     @health = 2

@@ -89,7 +89,7 @@ class Level
       unit.to_s.colorize(:light_blue)
     when Zombie
       unit.to_s.colorize(:light_yellow)
-    when Bat
+    when BlueBat
       unit.to_s.colorize(:blue)
     end
   end
