@@ -35,30 +35,27 @@ class Unit
   end
 
   def left
-    save_last_move
     @x -= 1
     @facing = :left
   end
 
   def down
-    save_last_move
     @y -= 1
     @facing = :down
   end
 
   def up
-    save_last_move
     @y += 1
     @facing = :up
   end
 
   def right
-    save_last_move
     @x += 1
     @facing = :right
   end
 
   def move(input)
+    save_last_move
     case input
     when :left
       left
@@ -68,13 +65,10 @@ class Unit
       up
     when :right
       right
-    when :stay
-      save_last_move
     end
   end
 
   def flip_direction
-    save_last_move
     case @facing
     when :left
       @facing = :right
@@ -100,19 +94,18 @@ class Unit
     end
   end
 
-  def direction_to_integer(direction)
-    integer = nil
+  def check_direction(x, y, direction)
     case direction
     when :left
-      integer = 0
+      x -= 1
     when :down
-      integer = 1
+      y -= 1
     when :up
-      integer = 2
+      y += 1
     when :right
-      integer = 3
+      x += 1
     end
-    integer
+    { x: x, y: y }
   end
 
   def integer_to_direction(integer)

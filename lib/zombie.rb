@@ -11,9 +11,12 @@ class Zombie < Enemy
     @attack = 1
   end
 
-  def take_turn(turn)
-    move(facing) if turn.even?
-    move(:stay) if turn.odd?
+  def take_turn(level)
+    move(facing) if level.turns.even?
+    move(:stay) if level.turns.odd?
+
+    next_move = check_direction(x, y, facing)
+    change_direction if level.map[next_move[:x]][next_move[:y]].class == Wall
   end
 
   def change_direction

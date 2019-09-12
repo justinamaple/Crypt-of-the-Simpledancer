@@ -11,7 +11,7 @@ class OrangeSlime < Enemy
     @attack = 1
   end
 
-  def take_turn(_turn)
+  def take_turn(_level)
     move(facing)
     change_direction
   end

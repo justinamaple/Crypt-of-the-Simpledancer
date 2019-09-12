@@ -206,7 +206,7 @@ class Game
 
   def move_enemies
     Enemy.all.each do |enemy|
-      enemy.take_turn(level.turns)
+      enemy.take_turn(level)
       check_move(enemy)
     end
   end
@@ -218,6 +218,7 @@ class Game
 
   def check_collisions(attacker)
     defender = level.map[attacker.x][attacker.y]
+    return if defender == attacker
 
     case defender
     when Wall
