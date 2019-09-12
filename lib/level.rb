@@ -91,6 +91,8 @@ class Level
       unit.to_s.colorize(:light_yellow)
     when BlueBat
       unit.to_s.colorize(:blue)
+    when RedBat
+      unit.to_s.colorize(:red)
     end
   end
 

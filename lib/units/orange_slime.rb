@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'enemy'
+require_relative 'slime'
 
 class OrangeSlime < Slime
   def take_turn(_level)

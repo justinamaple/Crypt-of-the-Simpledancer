@@ -17,7 +17,6 @@ class Bat < Enemy
     if @turns.even?
       make_move(level)
     else
-      change_direction
       move(:stay)
     end
     @turns += 1

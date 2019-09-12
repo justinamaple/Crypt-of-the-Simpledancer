@@ -63,9 +63,10 @@ class Game
   end
 
   def generate_random_enemy(x, y)
-    enemy_type = rand(0..4)
-    # enemy_type = 4
+    enemy_type = rand(0..5)
+    # enemy_type = 5
     enemy = nil
+    #Refactor this in enemy super class
     case enemy_type
     when 0
       enemy = GreenSlime.new(x, y)
@@ -77,6 +78,8 @@ class Game
       enemy = Zombie.new(x, y)
     when 4
       enemy = BlueBat.new(x, y)
+    when 5
+      enemy = RedBat.new(x, y)
     end
     Enemy.all << enemy
     level.map[enemy.x][enemy.y] = enemy
