@@ -5,7 +5,7 @@ require_all './lib'
 require 'yaml'
 require 'matrix'
 require 'rest-client'
-require 'JSON'
+require 'json'
 require 'colorize'
 require 'sinatra/activerecord/rake'
 
