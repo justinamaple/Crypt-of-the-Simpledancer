@@ -5,7 +5,7 @@ class GreenSlime < Enemy
     @x = x
     @y = y
     @last_location = { x: @x, y: @y }
-    @symbol = 'G'
+    @symbol = 'S'
     @health = 1
     @attack = 1
   end

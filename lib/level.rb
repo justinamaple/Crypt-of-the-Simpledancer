@@ -24,6 +24,7 @@ class Level
     end
   end
 
+  # String concat is super slow!!! Should refactor
   def to_s
     board_string = "\n"
     # Need to print top -> down
@@ -31,12 +32,14 @@ class Level
       inverse_y = max_y - 1 - y
       max_x.times do |x|
         unit = map[x][inverse_y]
-        board_string += case unit
-                        when String
-                          disco_floor(x, y)
-                        else
-                          " #{map[x][inverse_y]}"
-                        end
+        if unit.class != String
+          color_unit = unit_color(unit)
+          color_unit = ' ' + color_unit
+        else
+          spaced_unit = " " + unit
+          color_unit = disco_floor(x, y, spaced_unit)
+        end
+        board_string += color_unit
       end
       board_string += "\n"
     end
@@ -44,27 +47,44 @@ class Level
     board_string
   end
 
-  def disco_floor(x, y)
+  def disco_floor(x, y, unit)
     if turns.even?
       if x.odd? && y.odd?
-        ' -'
+        unit.colorize(:light_magenta)
       elsif x.even? && y.odd?
-        '  '
+        unit.colorize(:light_cyan)
       elsif x.odd? && y.even?
-        '  '
+        unit.colorize(:light_cyan)
       else # x.even? && y.even?
-        ' -'
+        unit.colorize(:light_magenta)
       end
     else # turn.odd?
       if x.odd? && y.odd?
-        '  '
+        unit.colorize(:light_cyan)
       elsif x.even? && y.odd?
-        ' -'
+        unit.colorize(:light_magenta)
       elsif x.odd? && y.even?
-        ' -'
+        unit.colorize(:light_magenta)
       else # x.even? && y.even?
-        '  '
+        unit.colorize(:light_cyan)
       end
+    end
+  end
+
+  def unit_color(unit)
+    case unit
+    when Wall
+      unit.to_s.colorize(color: :light_black)
+    when GreenSlime
+      unit.to_s.colorize(:green)
+    when OrangeSlime
+      unit.to_s.colorize(:light_red)
+    when BlueSlime
+      unit.to_s.colorize(:light_blue)
+    when Zombie
+      unit.to_s.colorize(:light_green)
+    when Player
+      unit.to_s.colorize(:light_white)
     end
   end
 end

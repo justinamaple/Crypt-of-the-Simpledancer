@@ -277,8 +277,9 @@ class Game
     puts " Level: #{levels_cleared}"
     hearts = ''
     player.health.times { hearts += '❤ ' }
-    puts "Health: #{hearts}"
-    puts "Weapon: Dagger"
+    puts "Health: #{hearts.colorize(:red)}"
+    print "Weapon: "
+    puts 'Dagger'.colorize(:cyan)
     
     @menu.print_controls
   end

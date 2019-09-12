@@ -4,6 +4,7 @@ require 'yaml'
 require 'matrix'
 require 'rest-client'
 require 'JSON'
+require 'colorize'
 require "sinatra/activerecord/rake"
 
 desc "starts console"

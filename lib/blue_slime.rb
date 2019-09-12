@@ -6,7 +6,7 @@ class BlueSlime < Enemy
     @x = x
     @y = y
     @last_location = { x: @x, y: @y }
-    @symbol = 'B'
+    @symbol = 'S'
     @facing = integer_to_direction rand(1..2)
     @health = 2
     @attack = 1
@@ -27,6 +27,6 @@ class BlueSlime < Enemy
 
   def take_dmg(dmg_amount)
     @health -= dmg_amount
-    @symbol = 'b' if @health == 1
+    @symbol = 's' if @health == 1
   end
 end

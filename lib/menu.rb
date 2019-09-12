@@ -6,9 +6,9 @@ class Menu
   def initialize; end
 
   def print_banner(user)
-    puts '============================================'
-    puts '===      Crypt of the Simpledancer!      ==='
-    puts '============================================'
+    puts '============================================'.colorize(:light_yellow)
+    puts '===      Crypt of the Simpledancer!      ==='.colorize(:light_yellow)
+    puts '============================================'.colorize(:light_yellow)
     puts " User: #{user.username}"
     last_run = Run.where('user_id = ?', user.id)
                   .last
@@ -28,7 +28,7 @@ class Menu
 
   def print_options
     puts
-    puts 'Menu:'
+    puts 'Menu:'.colorize(:light_yellow)
     puts '1. Start Game'
     puts '2. Change Username'
     puts '3. Display Leaderboard'
@@ -54,9 +54,9 @@ class Menu
                  .limit(10)
 
     clear_terminal
-    puts '==========================================='
-    puts '===         Top 10: Hall of FAME        ==='
-    puts '==========================================='
+    puts '==========================================='.colorize(:light_yellow)
+    puts '===         Top 10: Hall of FAME        ==='.colorize(:light_yellow)
+    puts '==========================================='.colorize(:light_yellow)
     top_ten.each_with_index do |run, index|
       next unless run
 
@@ -73,9 +73,9 @@ class Menu
     get_age_api(user)
     user.reload
 
-    puts '=============================================='
-    puts format('====       %8s\'s Achievements        ====', user.username)
-    puts '=============================================='
+    puts '=============================================='.colorize(:light_yellow)
+    puts format('====       %8s\'s Achievements        ===='.colorize(:light_yellow), user.username)
+    puts '=============================================='.colorize(:light_yellow)
     print_aggregate_stats(user)
     print_individual_achievements(user)
   end
@@ -123,7 +123,7 @@ class Menu
       unlocked = user.achievements.include?(achievement) ? '✓' : ' '
       stars = ''
       achievement.difficulty.times { stars += '★ ' }
-      print format("[%s] %-22s - %-10s", unlocked, achievement.achievement_name, stars)
+      print format("[%s] %-22s - %-10s", unlocked, achievement.achievement_name, stars.colorize(:light_yellow))
       puts '%12s' % achievement.created_at.strftime('%d/%m/%Y')
       puts "\t-%s" % achievement.condition
     end
