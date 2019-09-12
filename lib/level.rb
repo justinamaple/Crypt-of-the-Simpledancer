@@ -89,10 +89,20 @@ class Level
       unit.to_s.colorize(:light_blue)
     when Zombie
       unit.to_s.colorize(:light_yellow)
+    when Bat
+      unit.to_s.colorize(:blue)
     end
   end
 
   def emoji?(unit)
     unit.match?(Unicode::Emoji::REGEX)
+  end
+
+  def player?(x, y)
+    map[x][y].class == Player
+  end
+
+  def open?(x, y)
+    map[x][y].class == String
   end
 end

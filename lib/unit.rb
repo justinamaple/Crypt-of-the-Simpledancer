@@ -94,7 +94,7 @@ class Unit
     end
   end
 
-  def check_direction(x, y, direction)
+  def next_coords_in_direction(x, y, direction)
     case direction
     when :left
       x -= 1
@@ -105,7 +105,7 @@ class Unit
     when :right
       x += 1
     end
-    { x: x, y: y }
+    [x, y]
   end
 
   def integer_to_direction(integer)

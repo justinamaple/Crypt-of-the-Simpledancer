@@ -46,6 +46,7 @@ class Game
   def spawn_enemies
     Enemy.all.clear
     (@levels_cleared + 2).times do
+    # 9.times do
       x, y = *generate_empty_coordinates
       generate_random_enemy(x, y)
     end
@@ -63,7 +64,8 @@ class Game
   end
 
   def generate_random_enemy(x, y)
-    enemy_type = rand(0..3)
+    # enemy_type = rand(0..3)
+    enemy_type = 4
     enemy = nil
     case enemy_type
     when 0
@@ -74,6 +76,8 @@ class Game
       enemy = OrangeSlime.new(x, y)
     when 3
       enemy = Zombie.new(x, y)
+    when 4
+      enemy = Bat.new(x, y)
     end
     Enemy.all << enemy
     level.map[enemy.x][enemy.y] = enemy
@@ -112,7 +116,7 @@ class Game
 
   def play
     until won? || lost?
-      system 'clear'
+      # system 'clear'
       print_last_turn_summary
       puts level
       print_stats
