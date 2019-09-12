@@ -3,10 +3,10 @@
 class Player < Unit
   @@all = []
 
-  def initialize
+  def initialize(symbol = '@')
     @x = 4
     @y = 4
-    @symbol = '@'
+    @symbol = symbol
     @last_location = { x: @x, y: @y }
     @facing = nil
     @health = 3

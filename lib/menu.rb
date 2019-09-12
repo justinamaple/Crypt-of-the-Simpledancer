@@ -9,7 +9,7 @@ class Menu
     puts '============================================'.colorize(:light_yellow)
     puts '===      Crypt of the Simpledancer!      ==='.colorize(:light_yellow)
     puts '============================================'.colorize(:light_yellow)
-    puts " User: #{user.username.colorize(:light_blue)}"
+    puts " User: #{user.username.colorize(:light_blue)}\t\t      Appearance: #{user.symbol.colorize(:light_white)}"
     last_run = Run.where('user_id = ?', user.id)
                   .last
     best_run = Run.where('user_id = ?', user.id)
@@ -17,11 +17,13 @@ class Menu
                   .limit(1)[0]
     puts ' New Player Detected, Best of Luck <3' unless last_run
     if last_run
-      print " Last Run: Level #{last_run.levels_cleared}, %3d turns " % last_run.turns
+      print ' Last Run:'
+      print " Level #{last_run.levels_cleared}, %3d turns ".colorize(:magenta) % last_run.turns
       puts "on #{last_run.updated_at.strftime('%d/%m/%Y')}"
     end
     if best_run
-      print " Best Run: Level #{best_run.levels_cleared}, %3d turns " % best_run.turns
+      print ' Best Run: '
+      print "Level #{best_run.levels_cleared}, %3d turns ".colorize(:cyan) % best_run.turns
       puts "on #{best_run.updated_at.strftime('%d/%m/%Y')}"
     end
   end
@@ -30,22 +32,23 @@ class Menu
     puts
     puts 'Menu:'.colorize(:light_yellow)
     puts '1. Start Game'
-    puts '2. Change Username'
-    puts '3. Display Leaderboard'
-    puts '4. Show Achievements'
-    puts '5. Exit Game'
+    puts '2. Change User'
+    puts '3. Change Appearance'
+    puts '4. Display Leaderboard'
+    puts '5. Show Achievements'
+    puts '6. Exit Game'
     puts
-    print 'Press a number to begin: '
+    print 'Press the number to begin: '
   end
 
-  def find_or_create_user(username = nil)
-    return User.find_or_create_by(username: username) if username
-
+  def find_or_create_user
     clear_terminal
     print 'Please enter a username: '
     input = STDIN.gets.strip
     clear_terminal
-    User.find_or_create_by(username: input)
+    user = User.find_by(username: input)
+    user ||= User.create(username: input, symbol: '@')
+    user
   end
 
   def print_high_scores
@@ -123,14 +126,22 @@ class Menu
       unlocked = user.achievements.include?(achievement) ? '✓'.colorize(:light_green) : ' '
       stars = ''
       achievement.difficulty.times { stars += '★ ' }
-      print format("[%s] %-22s - %-24s", unlocked, achievement.achievement_name, stars.colorize(:light_yellow))
+      print format('[%s] %-22s - %-24s', unlocked, achievement.achievement_name, stars.colorize(:light_yellow))
       if unlocked != ' '
         puts '%12s' % user.unlocks.where(achievement: achievement)[0].created_at.strftime('%m/%d/%Y')
-      else 
+      else
         puts
       end
       puts "\t-%s" % achievement.condition
     end
+  end
+
+  def print_update_symbol(user)
+    clear_terminal
+    puts 'Enter a symbol to represent your character: '
+    symbol = get_input_s.chars.first
+    print_update_symbol(user) unless symbol
+    user.update(symbol: symbol)
   end
 
   def exit_game
@@ -151,9 +162,9 @@ class Menu
   end
 
   def print_controls
-    print "Controls: "
-    print "← ↓ ↑ →".colorize(:green)
-    print ", "
+    print 'Controls: '
+    print '← ↓ ↑ →'.colorize(:green)
+    print ', '
     print "'Q'".colorize(:light_yellow)
     puts ": quit\n"
   end

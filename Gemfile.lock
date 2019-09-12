@@ -73,6 +73,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.6)
+    unicode-emoji (2.1.0)
     zeitwerk (2.1.9)
 
 PLATFORMS
@@ -88,6 +89,7 @@ DEPENDENCIES
   rspec
   sinatra-activerecord
   sqlite3 (~> 1.4)
+  unicode-emoji
 
 BUNDLED WITH
    2.0.2

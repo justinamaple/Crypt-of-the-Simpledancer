@@ -32,12 +32,18 @@ class Level
       inverse_y = max_y - 1 - y
       max_x.times do |x|
         unit = map[x][inverse_y]
-        if unit.class != String
-          color_unit = unit_color(unit)
-          color_unit = ' ' + color_unit
-        else
-          spaced_unit = " " + unit
+        if unit.class == String
+          spaced_unit = ' ' + unit
           color_unit = disco_floor(x, y, spaced_unit)
+        elsif unit.class == Player
+          if emoji?(unit.symbol)
+            color_unit = unit.symbol
+          else
+            color_unit = ' ' + unit.symbol
+          end
+        else
+          color_unit = unit_color(unit)
+          color_unit = ' ' + color_unit unless emoji?(color_unit)
         end
         board_string += color_unit
       end
@@ -82,9 +88,11 @@ class Level
     when BlueSlime
       unit.to_s.colorize(:light_blue)
     when Zombie
-      unit.to_s.colorize(:light_green)
-    when Player
-      unit.to_s.colorize(:light_white)
+      unit.to_s.colorize(:light_yellow)
     end
+  end
+
+  def emoji?(unit)
+    unit.match?(Unicode::Emoji::REGEX)
   end
 end

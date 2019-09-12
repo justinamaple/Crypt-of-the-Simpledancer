@@ -4,7 +4,7 @@ class Wall < Unit
   def initialize(x, y)
     @x = x
     @y = y
-    @symbol = 'X'
+    @symbol = '☒'
     @health = 9_999
   end
 end

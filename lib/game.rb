@@ -18,8 +18,12 @@ class Game
   def start_new_game
     @total_turns = 0
     @levels_cleared = 0
-    @player = Player.new
-    @run = Run.create(user_id: @user.id, turns: total_turns, levels_cleared: levels_cleared)
+    @player = Player.new(user.symbol || '@')
+    @run = Run.create(
+      user_id: @user.id,
+      turns: total_turns,
+      levels_cleared: levels_cleared
+    )
     setup_level
   end
 
@@ -34,8 +38,8 @@ class Game
   end
 
   def spawn_player
-    player.x = rand(1..level.max_x - 1) if player.x >= level.max_x - 2
-    player.y = rand(1..level.max_y - 1) if player.y >= level.max_y - 2
+    player.x = rand(1..level.max_x - 2) if player.x >= level.max_x - 1
+    player.y = rand(1..level.max_y - 2) if player.y >= level.max_y - 1
     level.map[player.x][player.y] = player
   end
 
@@ -92,13 +96,16 @@ class Game
       @user = menu.find_or_create_user
       menu.print_banner(user)
     when '3'
-      menu.print_high_scores
+      menu.print_update_symbol(user)
+      user.reload
+      menu.print_banner(user)
     when '4'
+      menu.print_high_scores
+    when '5'
       menu.print_achievements(user)
-    when /[5qnx]/
+    when /[6qnx]/
       menu.exit_game
     else
-      menu.invalid_input
       menu_input
     end
   end
@@ -281,23 +288,6 @@ class Game
     print "Weapon: "
     puts 'Dagger'.colorize(:cyan)
     @menu.print_controls
-  end
-
-  def translate_controls(input)
-    output = :stay
-    case input
-    when /[ha]/
-      output = :left
-    when /[js]/
-      output = :down
-    when /[kw]/
-      output = :up
-    when /[ld]/
-      output = :right
-    when /[q]/
-      output = :quit
-    end
-    output
   end
 
   def translate_controls_arrows(input)
