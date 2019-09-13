@@ -2,14 +2,12 @@
 
 require 'io/console'
 class Game
-  attr_accessor :level, :user, :run, :levels_cleared, :total_turns
+  attr_accessor :level, :user, :run, :levels_cleared, :total_turns, :combo, :max_combo
   attr_reader :enemy, :player, :menu, :all_enemies, :medium_enemies, :basic_enemies
 
   GAME_CLEAR = 9
 
   def initialize
-    @levels_cleared = 0
-    @total_turns = 0
     @menu = Menu.new
     @user = menu.find_or_create_user
     create_enemy_buckets
@@ -19,6 +17,8 @@ class Game
   def start_new_game
     @total_turns = 0
     @levels_cleared = 0
+    @combo = 0
+    @max_combo = 0
     @player = Player.new(user.symbol || '@')
     @run = Run.create(
       user_id: @user.id,
