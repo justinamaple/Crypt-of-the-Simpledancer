@@ -281,8 +281,6 @@ class Game
     print "User: #{user.username.colorize(:light_blue)}  "
     print " Turn: #{level.turns.to_s.colorize(:light_cyan)}  "
     puts " Level: #{levels_cleared.to_s.colorize(:light_magenta)}"
-    player_x, player_y = *level.find_player
-    puts " Coords: #{player_x}, #{player_y}"
     hearts = ''
     player.health.times { hearts += '❤ ' }
     puts "Health: #{hearts.colorize(:red)}"

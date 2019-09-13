@@ -35,26 +35,26 @@ class Skeleton < Enemy
     elsif x > player_x && y == player_y
       move(:left)
     elsif x < player_x && y < player_y
-      attack_or_move_towards_player(player_x, player_y, %i[up right])
+      attack_or_move_towards_player(player_x, player_y, level, %i[up right])
     elsif x < player_x && y > player_y
-      attack_or_move_towards_player(player_x, player_y, %i[down right])
+      attack_or_move_towards_player(player_x, player_y, level, %i[down right])
     elsif x > player_x && y < player_y
-      attack_or_move_towards_player(player_x, player_y, %i[up left])
+      attack_or_move_towards_player(player_x, player_y, level, %i[up left])
     else # x > player_x && y > player_y
-      attack_or_move_towards_player(player_x, player_y, %i[down left])
+      attack_or_move_towards_player(player_x, player_y, level, %i[down left])
     end
   end
 
-  def attack_or_move_towards_player(player_x, player_y, directions)
-    directions.each do |direction|
-      next_x, next_y = next_coords_in_direction(x, y, direction)
-      if next_x == player_x && next_y == player_y
+  def attack_or_move_towards_player(player_x, player_y, level, directions)
+    until directions.empty?
+      direction = directions.sample
+      directions.delete(direction)
+      next_x, next_y = *next_coords_in_direction(x, y, direction)
+      if level.open?(next_x, next_y)
         move(direction)
         return
       end
     end
-
-    move(directions.sample)
   end
 
   def reset_position
