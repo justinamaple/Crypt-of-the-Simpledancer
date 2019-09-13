@@ -7,7 +7,7 @@ class Slime < Enemy
     @x = x
     @y = y
     @last_location = { x: @x, y: @y }
-    @symbol = 'S'
+    @symbol = 'O'
     @facing = integer_to_direction rand(0..3)
     @health = 1
     @attack = 1

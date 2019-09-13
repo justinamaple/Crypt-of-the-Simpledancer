@@ -7,7 +7,7 @@ class BlueSlime < Slime
     @x = x
     @y = y
     @last_location = { x: x, y: y }
-    @symbol = 'S'
+    @symbol = 'O'
     @facing = integer_to_direction rand(1..2)
     @health = 2
     @attack = 1
@@ -39,6 +39,6 @@ class BlueSlime < Slime
 
   def take_dmg(dmg_amount)
     @health -= dmg_amount
-    @symbol = 's' if @health == 1
+    @symbol = 'o' if @health == 1
   end
 end

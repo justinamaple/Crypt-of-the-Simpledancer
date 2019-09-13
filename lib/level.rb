@@ -93,11 +93,25 @@ class Level
       unit.to_s.colorize(:blue)
     when RedBat
       unit.to_s.colorize(:red)
+    when WhiteSkeleton
+      unit.to_s.colorize(:light_black)
     end
   end
 
   def emoji?(unit)
     unit.match?(Unicode::Emoji::REGEX)
+  end
+
+  # Honestly not sure if I should just store this value?
+  # Seems heavy handed to search each time, but I would
+  # need to update a player_x and player_y everytime
+  # player moved or did not move.
+  def find_player
+    max_x.times do |x|
+      max_y.times do |y|
+        return [x, y] if player?(x, y)
+      end
+    end
   end
 
   def player?(x, y)

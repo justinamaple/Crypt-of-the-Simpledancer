@@ -109,7 +109,7 @@ class Game
 
   def play
     until won? || lost?
-      # system 'clear'
+      system 'clear'
       print_last_turn_summary
       puts level
       print_stats
@@ -180,7 +180,7 @@ class Game
   end
 
   def lost?
-    Player.all.empty?
+    @player.dead?
   end
 
   def record_run
@@ -193,7 +193,7 @@ class Game
     direction = translate_controls_arrows(input)
     if direction == :quit
       @last_hit_enemy = @player
-      Player.all.clear
+      @player.health = 0
     end
     move_player if direction == :stay
     level.turns += 1 if direction != :stay
@@ -205,6 +205,7 @@ class Game
     Enemy.all.each do |enemy|
       enemy.take_turn(level)
       check_move(enemy)
+      break if player.dead?
     end
   end
 
@@ -249,7 +250,7 @@ class Game
       reset_current_location(defender)
       case defender
       when Player
-        Player.all.delete(defender)
+        # Catch it when next turn starts
       when Enemy
         Enemy.all.delete(defender)
       end
@@ -280,6 +281,8 @@ class Game
     print "User: #{user.username.colorize(:light_blue)}  "
     print " Turn: #{level.turns.to_s.colorize(:light_cyan)}  "
     puts " Level: #{levels_cleared.to_s.colorize(:light_magenta)}"
+    player_x, player_y = *level.find_player
+    puts " Coords: #{player_x}, #{player_y}"
     hearts = ''
     player.health.times { hearts += '❤ ' }
     puts "Health: #{hearts.colorize(:red)}"
