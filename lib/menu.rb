@@ -114,6 +114,7 @@ class Menu
       time_played = user.runs.sum do |run|
         run.updated_at - run.created_at
       end
+      puts format('%12s Highest Combo: %5d', '', user.runs.max_by(&:max_combo).max_combo)
       puts format('%12s Time Played: %7s', '', Time.at(time_played).strftime('%M:%S'))
       user_age = user.age ? user.age.to_s : '??'
       puts format('%12s Estimated Age: %5s', '', user_age)

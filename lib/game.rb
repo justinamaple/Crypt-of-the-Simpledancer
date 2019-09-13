@@ -17,6 +17,7 @@ class Game
   def start_new_game
     @total_turns = 0
     @levels_cleared = 0
+    @full_combo = true
     @combo = 0
     @max_combo = 0
     @player = Player.new(user.symbol || '@')
@@ -131,6 +132,7 @@ class Game
     @total_turns += level.turns
     if won?
       @levels_cleared += 1
+      @combo += 1
       setup_level
       if levels_cleared >= GAME_CLEAR
         win_screen
@@ -152,8 +154,10 @@ class Game
       if @last_hit_player
         if @last_hit_player.dead?
           puts "You destroyed #{@last_hit_player.class}!"
+          @combo += 1
         elsif @last_hit_player.class == Wall
           puts "You kick the #{@last_hit_player.class} pointlessly..."
+          reset_combo
         else
           puts "You smack #{@last_hit_player.class} for #{player.attack}."
         end
@@ -163,11 +167,18 @@ class Game
 
       if @last_hit_enemy
         puts "#{@last_hit_enemy.class} bops you for #{@last_hit_enemy.attack}."
+        reset_combo
       else
         puts 'The enemies sneer at you from a distance.'
       end
     end
     @last_hit_enemy = nil
+  end
+
+  def reset_combo
+    @max_combo = combo if combo > max_combo
+    @combo = 0
+    @full_combo = false
   end
 
   def try_again
@@ -195,7 +206,12 @@ class Game
   end
 
   def record_run
-    @run.update(turns: @total_turns, levels_cleared: levels_cleared)
+    @max_combo = combo if combo > max_combo
+    @run.update(
+      turns: total_turns,
+      levels_cleared: levels_cleared,
+      max_combo: max_combo
+    )
     @levels_cleared = 0
   end
 
@@ -281,6 +297,7 @@ class Game
   def win_screen
     puts 'You are a Winner!!!'.colorize(:green)
     puts "Cleared level #{levels_cleared} in #{@total_turns} turns"
+    puts "FULL COMBO!!! You are a LEGENDARY..." if @full_combo
   end
 
   def lose_screen
@@ -294,7 +311,12 @@ class Game
     puts " Level: #{levels_cleared.to_s.colorize(:light_magenta)}"
     hearts = ''
     player.health.times { hearts += '❤ ' }
-    puts "Health: #{hearts.colorize(:red)}"
+    # puts "Health: #{}"
+    # puts "Combo: #{combo.colorize(:red)}"
+    puts format('Health: %3s         Combo: %4s',
+      hearts.colorize(:red), combo.to_s.colorize(:light_black)
+    )
+
     print "Weapon: "
     puts 'Dagger'.colorize(:cyan)
     @menu.print_controls
