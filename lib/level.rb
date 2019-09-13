@@ -80,7 +80,7 @@ class Level
   def unit_color(unit)
     case unit
     when Wall
-      unit.to_s.colorize(color: :light_black)
+      unit.to_s.colorize(:light_black)
     when GreenSlime
       unit.to_s.colorize(:green)
     when OrangeSlime
@@ -94,6 +94,10 @@ class Level
     when RedBat
       unit.to_s.colorize(:red)
     when WhiteSkeleton
+      unit.to_s.colorize(:white)
+    when YellowSkeleton
+      unit.to_s.colorize(:yellow)
+    when BlackSkeleton
       unit.to_s.colorize(:light_black)
     end
   end

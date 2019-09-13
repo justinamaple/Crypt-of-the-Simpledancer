@@ -9,7 +9,7 @@ class Menu
     puts '============================================'.colorize(:light_yellow)
     puts '===      Crypt of the Simpledancer!      ==='.colorize(:light_yellow)
     puts '============================================'.colorize(:light_yellow)
-    puts " User: #{user.username.colorize(:light_blue)}\t\t      Appearance: #{user.symbol.colorize(:light_white)}"
+    puts " User: #{user.username.colorize(:light_blue)}\t\t      Appearance: #{user.symbol}"
     last_run = Run.where('user_id = ?', user.id)
                   .last
     best_run = Run.where('user_id = ?', user.id)

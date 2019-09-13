@@ -3,7 +3,7 @@
 require 'io/console'
 class Game
   attr_accessor :level, :user, :run, :levels_cleared, :total_turns
-  attr_reader :enemy, :player, :menu, :all_enemy_types
+  attr_reader :enemy, :player, :menu, :all_enemies, :medium_enemies, :basic_enemies
 
   GAME_CLEAR = 9
 
@@ -12,14 +12,8 @@ class Game
     @total_turns = 0
     @menu = Menu.new
     @user = menu.find_or_create_user
+    create_enemy_buckets
     menu.print_banner(user)
-    @all_enemy_types = assemble_all_enemy_types
-  end
-
-  def assemble_all_enemy_types
-    Enemy.descendants.select do |enemy|
-      enemy.descendants.empty?
-    end
   end
 
   def start_new_game
@@ -32,6 +26,16 @@ class Game
       levels_cleared: levels_cleared
     )
     setup_level
+  end
+
+  def create_enemy_buckets
+    @all_enemies = Enemy.descendants.select do |enemy|
+      enemy.descendants.empty?
+    end
+
+    @medium_enemies = all_enemies.reject { |enemy| Skeleton.descendants.include?(enemy) }
+
+    @basic_enemies = medium_enemies.reject { |enemy| Bat.descendants.include?(enemy) }
   end
 
   def setup_level
@@ -70,7 +74,14 @@ class Game
   end
 
   def generate_random_enemy(x, y)
-    random_enemy_class = @all_enemy_types.sample
+    case @levels_cleared
+    when 0..1
+      random_enemy_class = basic_enemies.sample
+    when 2..4
+      random_enemy_class = medium_enemies.sample
+    when 5..10
+      random_enemy_class = all_enemies.sample
+    end
     enemy = random_enemy_class.new(x, y)
     Enemy.all << enemy
     level.map[enemy.x][enemy.y] = enemy
