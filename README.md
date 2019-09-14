@@ -179,7 +179,7 @@ You will spawn in the level with 3 hearts and a Dagger. The default appearance i
 
 ### Weapons
 
-Currently the only weapon is the Dagger, which enables attacking one space away in a cardinal direction, and remaining in the same place after attacking.
+Currently the only weapon is the Dagger, which enables attacking one space away in a cardinal direction, remaining in the same place after attacking.
 
 In the near future I would like to add
 
