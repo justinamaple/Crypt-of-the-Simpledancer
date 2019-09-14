@@ -78,9 +78,9 @@ class Game
     case @levels_cleared
     when 0..1
       random_enemy_class = basic_enemies.sample
-    when 2..4
+    when 2..3
       random_enemy_class = medium_enemies.sample
-    when 5..10
+    when 4..10
       random_enemy_class = all_enemies.sample
     end
     enemy = random_enemy_class.new(x, y)
@@ -121,7 +121,7 @@ class Game
 
   def play
     until won? || lost?
-      system 'clear'
+      menu.clear_terminal
       print_last_turn_summary
       puts level
       print_stats
