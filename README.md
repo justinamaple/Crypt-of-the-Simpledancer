@@ -235,7 +235,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@J3ubbleboy](https://twitter.com/J3ubbleboy) - justinamaple@gmail.com
+Justin Maple - [@J3ubbleboy](https://twitter.com/J3ubbleboy) - justinamaple@gmail.com
 
 Project Link: [https://github.com/justinamaple/Crypt-of-the-Simpledancer](https://github.com/justinamaple/Crypt-of-the-Simpledancer)
 
